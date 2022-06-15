@@ -159,9 +159,10 @@ export async function embedDashboard({
   }
 
   const getScrollSize = () => ourPort.get<Size>('getScrollSize');
-
+  ourPort.emit('notifyParentDOM');
   return {
     getScrollSize,
     unmount,
+
   };
 }

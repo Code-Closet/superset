@@ -309,6 +309,16 @@ class Chart extends React.PureComponent {
               source={this.props.dashboardId ? 'dashboard' : 'explore'}
               data-test={this.props.vizType}
             />
+            <Button
+              buttonStyle="primary"
+              style={{
+                position: 'absolute',
+                top: 0,
+              }}
+              onClick={this.bubbleEvent}
+            >
+              Chart Button
+            </Button>
           </div>
 
           {!isLoading && !chartAlert && isFaded && (
@@ -323,6 +333,11 @@ class Chart extends React.PureComponent {
         </Styles>
       </ErrorBoundary>
     );
+  }
+
+  bubbleEvent() {
+    console.log(`Register the button click `);
+    window.supersetPort.postMessage('Button clicked from chart');
   }
 }
 

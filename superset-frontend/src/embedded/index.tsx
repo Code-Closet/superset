@@ -130,6 +130,8 @@ function validateMessageEvent(event: MessageEvent) {
   }
 }
 
+let supersetPort: MessagePort;
+
 window.addEventListener('message', function embeddedPageInitializer(event) {
   try {
     validateMessageEvent(event);
@@ -139,6 +141,7 @@ window.addEventListener('message', function embeddedPageInitializer(event) {
   }
 
   const port = event.ports?.[0];
+  window.supersetPort = port;
   if (event.data.handshake === 'port transfer' && port) {
     log('message port received', event);
 
@@ -153,7 +156,15 @@ window.addEventListener('message', function embeddedPageInitializer(event) {
     switchboard.defineMethod('guestToken', ({ guestToken }) => {
       setupGuestClient(guestToken);
       if (!started) {
-        ReactDOM.render(<EmbeddedApp />, appMountPoint);
+        ReactDOM.render(
+          <div>
+            <button type="button" onClick={handleButtonClick}>
+              Test
+            </button>
+            <EmbeddedApp />
+          </div>,
+          appMountPoint,
+        );
         started = true;
       }
     });
@@ -163,8 +174,15 @@ window.addEventListener('message', function embeddedPageInitializer(event) {
       height: document.body.scrollHeight,
     }));
 
+    port.onmessage = e =>
+      port.postMessage('Acknowledgement : Received message in superset');
+
     switchboard.start();
   }
 });
 
 log('embed page is ready to receive messages');
+
+function handleButtonClick() {
+  window.supersetPort.postMessage('Button clicked');
+}
