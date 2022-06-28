@@ -335,10 +335,10 @@ class Chart extends React.PureComponent {
     );
   }
 
-  bubbleEvent() {
-    console.log(`Register the button click `);
-    window.supersetPort.postMessage('Button clicked from chart');
-  }
+  bubbleEvent = () => {
+    console.log(`Register the button click ${this.props.dashboardId}`);
+    window.supersetPort.postMessage( ` ${JSON.stringify(this.props)}` );
+  };
 }
 
 Chart.propTypes = propTypes;

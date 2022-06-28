@@ -127,6 +127,7 @@ export async function embedDashboard({
         )
         log('sent message channel to the iframe');
 
+        ourPort.onmessage = onMessageFromSuperset;
         // return our port from the promise
         resolve(new Switchboard({ port: ourPort, name: 'superset-embedded-sdk', debug }));
       });
@@ -158,11 +159,19 @@ export async function embedDashboard({
     mountPoint.replaceChildren();
   }
 
-  const getScrollSize = () => ourPort.get<Size>('getScrollSize');
-  ourPort.emit('notifyParentDOM');
+  function onMessageFromSuperset(e) {
+    console.log("Got message from superset.");
+    console.log(e.data);
+  }
+
+  const getScrollSize = () => ourPort.get('getScrollSize');
+
+  const getChartProps = (id?:string) => ourPort.get('getChartProps', id);
+  ourPort.port.postMessage('Pinging superset from outer app.');
+
   return {
     getScrollSize,
     unmount,
-
+    getChartProps,
   };
 }

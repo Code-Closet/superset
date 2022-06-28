@@ -174,8 +174,10 @@ window.addEventListener('message', function embeddedPageInitializer(event) {
       height: document.body.scrollHeight,
     }));
 
-    port.onmessage = e =>
-      port.postMessage('Acknowledgement : Received message in superset');
+    switchboard.defineMethod('getChartProps', chartId => {
+      console.log(`Fetch the props for chartId ${chartId}`);
+      return chartId;
+    });
 
     switchboard.start();
   }
